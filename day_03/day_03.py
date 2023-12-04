@@ -152,8 +152,70 @@ def part_one():
         # 497933?
         
 def part_two():
-    pass
+    arr = [0] * 140
+
+    symbols = "%#/*-=@+$&"
+    row = 0
+    with open("/home/student/aoc23/aoc_2023/day_03/input.txt", "r") as file_in:
+        for line in file_in.read().splitlines():
+            col = 0
+            arr[row] = []
+            while col < len(line):
+                if line[col].isdigit():
+                    start_index = col
+                    new_num = ""
+                    try:
+                        while line[col].isdigit():
+                            new_num += line[col]
+                            col += 1
+                    except IndexError:
+                        pass
+                    try:
+                        for i in range(start_index, col):
+                            arr[row].append(int(new_num))
+                    except IndexError:
+                        pass
+                else:
+                    arr[row].append(line[col])
+                    col += 1
+            row += 1
+    discovered = dict()
+    for row in range(140):
+        for col in range(140):
+            discovered[(row, col)] = set()
+
+    total = 0
+    for row in range(140):
+        for col in range(140):
+            curr = (row, col)
+            if str(arr[row][col]) in symbols:
+                if isinstance(arr[row - 1][col - 1], int):
+                    discovered[curr].add(arr[row - 1][col - 1])
+                if isinstance(arr[row - 1][col], int):
+                    discovered[curr].add(arr[row - 1][col])
+                if isinstance(arr[row - 1][col + 1], int):
+                    discovered[curr].add(arr[row - 1][col + 1])
+                if isinstance(arr[row][col - 1], int):
+                    discovered[curr].add(arr[row][col - 1])
+                if isinstance(arr[row][col + 1], int):
+                    discovered[curr].add(arr[row][col + 1])
+                if isinstance(arr[row + 1][col - 1], int):
+                    discovered[curr].add(arr[row + 1][col - 1])
+                if isinstance(arr[row + 1][col], int):
+                    discovered[curr].add(arr[row + 1][col])
+                if isinstance(arr[row + 1][col + 1], int):
+                    discovered[curr].add(arr[row + 1][col + 1])
+    
+    for symbol in discovered.values():
+        if len(symbol) == 2:
+            gear_total = 1
+            for value in symbol:
+                gear_total *= value
+            total += gear_total
+
+    print(total)
+    # 72246648
 
 if __name__ == "__main__":
-    part_one()
-    # part_two()
+    # part_one()
+    part_two()
